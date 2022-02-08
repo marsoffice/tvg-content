@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using MarsOffice.Microfunction;
+using MarsOffice.Tvg.Content.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -27,9 +28,7 @@ namespace MarsOffice.Tvg.Content
                 var principal = MarsOfficePrincipal.Parse(req);
                 var userId = principal.FindFirst("id").Value;
                 await Task.CompletedTask;
-                return new OkObjectResult(new[] { 
-                    "Reddit"
-                });
+                return new OkObjectResult(Enum.GetNames<ContentType>());
             }
             catch (Exception e)
             {
