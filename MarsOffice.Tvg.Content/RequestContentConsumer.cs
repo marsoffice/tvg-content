@@ -46,6 +46,7 @@ namespace MarsOffice.Tvg.Content
             }
             catch (Exception e)
             {
+                log.LogError(e, "Function threw an exception");
                 await contentResponseQueue.AddAsync(new ContentResponse
                 {
                     Success = false,
