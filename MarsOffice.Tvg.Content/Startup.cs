@@ -21,7 +21,7 @@ namespace MarsOffice.Tvg.Content
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddHttpClient("Reddit");
+            builder.Services.AddHttpClient();
         }
     }
 }
