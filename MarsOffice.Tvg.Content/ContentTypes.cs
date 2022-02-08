@@ -26,10 +26,8 @@ namespace MarsOffice.Tvg.Content
         {
             try
             {
-                var principal = MarsOfficePrincipal.Parse(req);
-                var userId = principal.FindFirst("id").Value;
                 await Task.CompletedTask;
-                return new OkObjectResult(Enum.GetNames<ContentType>());
+                return new OkObjectResult(ContentTypesEnum.AllContentTypes);
             }
             catch (Exception e)
             {

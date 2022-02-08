@@ -11,6 +11,6 @@ namespace MarsOffice.Tvg.Content.Abstractions
         public string AuthorAvatar { get; set; }
         public DateTimeOffset PostedDate { get; set; }
         public string Text { get; set; }
-        public IEnumerable<Comment> Comments { get; set; }
+        public IEnumerable<Post> Comments { get; set; }
     }
 }
