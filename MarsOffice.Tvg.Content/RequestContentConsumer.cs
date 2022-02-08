@@ -5,7 +5,6 @@ using MarsOffice.Tvg.Content.Abstractions;
 using MarsOffice.Tvg.Content.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Polly;
 
 namespace MarsOffice.Tvg.Content
 {
@@ -28,10 +27,7 @@ namespace MarsOffice.Tvg.Content
             {
                 var service = ContentServiceFactory.Create(request.ContentType, _httpClient);
 
-                var reply = await Policy
-                    .Handle<Exception>()
-                    .WaitAndRetryAsync(new[] { TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(1500) })
-                    .ExecuteAsync(async () => await service.GetContent(request));
+                var reply = await service.GetContent(request);
 
                 await contentResponseQueue.AddAsync(new ContentResponse
                 {
