@@ -37,7 +37,7 @@ namespace MarsOffice.Tvg.Content
                     ContentType = request.ContentType,
                     JobId = request.JobId,
                     VideoId = request.VideoId
-            });
+                });
                 await contentResponseQueue.FlushAsync();
             }
             catch (Exception e)
