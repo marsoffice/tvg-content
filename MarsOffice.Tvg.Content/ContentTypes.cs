@@ -17,6 +17,7 @@ namespace MarsOffice.Tvg.Content
         {
         }
 
+        // https://www.reddit.com/r/AskReddit/random.json
         [FunctionName("GetAllContentTypes")]
         public async Task<IActionResult> GetAllContentTypes(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "api/content/getAllContentTypes")] HttpRequest req,
