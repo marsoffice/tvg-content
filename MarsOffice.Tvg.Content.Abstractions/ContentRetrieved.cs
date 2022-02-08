@@ -6,7 +6,7 @@ namespace MarsOffice.Tvg.Content.Abstractions
     {
         public string VideoId { get; set; }
         public string JobId { get; set; }
-        public string ContentType { get; set; }
+        public ContentType ContentType { get; set; }
         public IEnumerable<Post> Posts { get; set; }
     }
 }
