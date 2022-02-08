@@ -17,7 +17,7 @@ namespace MarsOffice.Tvg.Content
         }
 
         [FunctionName("GetAllContentTypes")]
-        public async Task<IActionResult> GetAllSpeechTypes(
+        public async Task<IActionResult> GetAllContentTypes(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "api/content/getAllContentTypes")] HttpRequest req,
             ILogger log
             )
