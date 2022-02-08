@@ -1,21 +1,18 @@
+using System.Net.Http;
+using System.Threading.Tasks;
 using MarsOffice.Tvg.Content.Abstractions;
+using MarsOffice.Tvg.Content.Entities;
 
 namespace MarsOffice.Tvg.Content.Services
 {
     public abstract class AbstractContentService
     {
-        
-    }
-
-    public static class ContentServiceFactory {
-        public static AbstractContentService Create(string contentType) {
-            if (contentType == ContentTypesEnum.Jokes) {
-                return null;
-            }
-            if (contentType == ContentTypesEnum.Reddit) {
-                return null;
-            }
-            throw new System.Exception("Unknown content type");
+        protected readonly HttpClient httpClient;
+        public AbstractContentService(HttpClient httpClient)
+        {
+            this.httpClient = httpClient;
         }
+
+        public abstract Task<ServiceResponse> GetContent(RequestContent request);
     }
 }
