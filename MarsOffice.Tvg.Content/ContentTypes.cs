@@ -26,10 +26,9 @@ namespace MarsOffice.Tvg.Content
             {
                 var principal = MarsOfficePrincipal.Parse(req);
                 var userId = principal.FindFirst("id").Value;
-
+                await Task.CompletedTask;
                 return new OkObjectResult(new[] { 
-                    "Reddit",
-                    "Jokes"
+                    "Reddit"
                 });
             }
             catch (Exception e)
