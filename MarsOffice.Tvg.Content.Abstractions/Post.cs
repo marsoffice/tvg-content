@@ -5,6 +5,7 @@ namespace MarsOffice.Tvg.Content.Abstractions
 {
     public class Post
     {
+        public string Category { get; set; }
         public string Topic { get; set; }
         public string UniqueId { get; set; }
         public string Author { get; set; }

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using MarsOffice.Tvg.Content.Abstractions;
 using MarsOffice.Tvg.Content.Services;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
@@ -21,13 +22,14 @@ namespace MarsOffice.Tvg.Content
         public async Task Run(
             [QueueTrigger("request-content", Connection = "localsaconnectionstring")] RequestContent request,
             [Queue("content-response", Connection = "localsaconnectionstring")] IAsyncCollector<ContentResponse> contentResponseQueue,
+            [Table("UsedPosts", Connection = "localsaconnectionstring")] CloudTable usedPostsTable,
             ILogger log)
         {
             try
             {
-                var service = ContentServiceFactory.Create(request.ContentType, _httpClient);
+                var service = ContentServiceFactory.Create(request.ContentType, _httpClient, usedPostsTable);
 
-                var reply = await service.GetContent(request);
+                var reply = await service.Execute(request);
 
                 await contentResponseQueue.AddAsync(new ContentResponse
                 {
