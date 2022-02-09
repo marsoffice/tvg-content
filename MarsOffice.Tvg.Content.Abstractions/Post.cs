@@ -13,5 +13,6 @@ namespace MarsOffice.Tvg.Content.Abstractions
         public DateTimeOffset PostedDate { get; set; }
         public string Text { get; set; }
         public IEnumerable<Post> Comments { get; set; }
+        public int? Score { get; set; }
     }
 }

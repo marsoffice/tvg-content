@@ -49,9 +49,19 @@ namespace MarsOffice.Tvg.Content.Services
                     tries++;
                     continue;
                 }
+
+                var comments = post.Comments;
+                post.Comments = null;
                 posts.Add(
                     post
                 );
+
+                if (request.ContentNoOfIncludedTopComments != null && comments != null)
+                {
+                    comments = comments.OrderByDescending(x => x.Score).Take(request.ContentNoOfIncludedTopComments.Value).ToList();
+                    posts.AddRange(comments);
+                }
+
                 tries++;
             }
 
