@@ -40,7 +40,8 @@ namespace MarsOffice.Tvg.Content
                     ContentType = request.ContentType,
                     JobId = request.JobId,
                     VideoId = request.VideoId,
-                    UserId = request.UserId
+                    UserId = request.UserId,
+                    UserEmail = request.UserEmail
                 });
                 await contentResponseQueue.FlushAsync();
             }

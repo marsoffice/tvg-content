@@ -7,6 +7,7 @@ namespace MarsOffice.Tvg.Content.Abstractions
         public string VideoId { get; set; }
         public string JobId { get; set; }
         public string UserId {get;set;}
+        public string UserEmail { get; set; }
         public string ContentType { get; set; }
         public string ContentTopic { get; set; }
         public bool? ContentGetLatestPosts { get; set; }
