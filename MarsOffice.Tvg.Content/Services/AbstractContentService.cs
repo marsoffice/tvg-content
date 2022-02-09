@@ -22,24 +22,17 @@ namespace MarsOffice.Tvg.Content.Services
         {
             var tries = 0;
             var posts = new List<Post>();
-            while (tries < 10)
+            while (tries < 100 && posts.Count < (request.ContentMaxPosts ?? 5))
             {
-                var batch = await GetPosts(request, request.ContentMaxPosts ?? 5);
-                if (!batch.Any())
+                var post = await GetOneRandomPost(request);
+                if (post == null)
                 {
                     tries++;
                     continue;
                 }
                 var filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, request.JobId);
-                var orFilters = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, batch.First().UniqueId);
-                for (var i = 1; i < batch.Count(); i++)
-                {
-                    orFilters = TableQuery.CombineFilters(
-                        orFilters,
-                        TableOperators.Or,
-                        TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, batch.ElementAt(i).UniqueId)
-                    );
-                }
+                var orFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, post.UniqueId);
+
                 var query = new TableQuery<UsedPost>()
                     .Where(
                         TableQuery.CombineFilters(
@@ -47,12 +40,17 @@ namespace MarsOffice.Tvg.Content.Services
                                 filter,
                                 TableOperators.And,
                                 TableQuery.GenerateFilterCondition("ContentType", QueryComparisons.Equal, request.ContentType)
-                            ), TableOperators.And, orFilters
+                            ), TableOperators.And, orFilter
                         )
-                    );
+                    ).Take(1);
                 var dbResults = await usedPostsTable.ExecuteQuerySegmentedAsync(query, null);
-                posts.AddRange(
-                    batch.Where(p => !dbResults.Any(dbP => p.UniqueId == dbP.RowKey)).ToList()
+                if (dbResults.Any())
+                {
+                    tries++;
+                    continue;
+                }
+                posts.Add(
+                    post
                 );
                 tries++;
             }
@@ -62,12 +60,13 @@ namespace MarsOffice.Tvg.Content.Services
                 throw new System.Exception("Unable to retrieve posts");
             }
 
-            return new ServiceResponse { 
+            return new ServiceResponse
+            {
                 Category = posts.Where(x => !string.IsNullOrEmpty(x.Category)).FirstOrDefault()?.Category,
                 Posts = posts
             };
         }
 
-        public abstract Task<IEnumerable<Post>> GetPosts(RequestContent request, int no);
+        public abstract Task<Post> GetOneRandomPost(RequestContent request);
     }
 }

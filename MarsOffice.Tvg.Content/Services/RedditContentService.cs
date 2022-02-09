@@ -15,7 +15,7 @@ namespace MarsOffice.Tvg.Content.Services
         {
         }
 
-        public override async Task<IEnumerable<Post>> GetPosts(RequestContent request, int no)
+        public override async Task<Post> GetOneRandomPost(RequestContent request)
         {
             var response = await Policy
                                 .Handle<Exception>()
