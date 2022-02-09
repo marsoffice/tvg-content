@@ -70,6 +70,21 @@ namespace MarsOffice.Tvg.Content.Services
                 throw new System.Exception("Unable to retrieve posts");
             }
 
+
+            foreach (var p in posts)
+            {
+                var insertOp = TableOperation.InsertOrMerge(new UsedPost
+                {
+                    ContentType = request.ContentType,
+                    PartitionKey = request.JobId,
+                    RowKey = p.UniqueId,
+                    UniqueId = p.UniqueId,
+                    JobId = request.JobId,
+                    ETag = "*"
+                });
+                await usedPostsTable.ExecuteAsync(insertOp);
+            }
+
             return new ServiceResponse
             {
                 Category = posts.Where(x => !string.IsNullOrEmpty(x.Category)).FirstOrDefault()?.Category,
