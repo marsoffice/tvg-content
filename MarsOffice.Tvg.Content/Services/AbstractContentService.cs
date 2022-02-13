@@ -22,7 +22,7 @@ namespace MarsOffice.Tvg.Content.Services
         {
             var tries = 0;
             var posts = new List<Post>();
-            while (tries < 100 && posts.Count < (request.ContentMaxPosts ?? 5))
+            while (tries < 1000 && posts.Count < (request.ContentMaxPosts ?? 5))
             {
                 var post = await GetOneRandomPost(request);
                 if (post == null)
