@@ -66,8 +66,14 @@ namespace MarsOffice.Tvg.Content.Services
                     post
                 );
 
-                if (request.ContentNoOfIncludedTopComments != null && comments != null)
+                if (request.ContentNoOfIncludedTopComments != null)
                 {
+                    if (comments == null || !comments.Any())
+                    {
+                        posts.Remove(post);
+                        tries++;
+                        continue;
+                    }
                     var commentsQueryable = comments.AsQueryable();
                     commentsQueryable = commentsQueryable.OrderByDescending(x => x.Score);
                     if (request.ContentMinChars != null)
@@ -82,6 +88,7 @@ namespace MarsOffice.Tvg.Content.Services
                     var commentsResult = commentsQueryable.ToList();
                     if (commentsResult.Count < request.ContentNoOfIncludedTopComments.Value)
                     {
+                        posts.Remove(post);
                         tries++;
                         continue;
                     }
