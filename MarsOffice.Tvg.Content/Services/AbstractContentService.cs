@@ -30,6 +30,16 @@ namespace MarsOffice.Tvg.Content.Services
                     tries++;
                     continue;
                 }
+                if (request.ContentMinChars != null && post.Text.Length < request.ContentMinChars.Value)
+                {
+                    tries++;
+                    continue;
+                }
+                if (request.ContentMaxChars != null && post.Text.Length > request.ContentMaxChars.Value)
+                {
+                    tries++;
+                    continue;
+                }
                 var filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, request.JobId);
                 var orFilter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, post.UniqueId);
 
@@ -58,8 +68,19 @@ namespace MarsOffice.Tvg.Content.Services
 
                 if (request.ContentNoOfIncludedTopComments != null && comments != null)
                 {
-                    comments = comments.OrderByDescending(x => x.Score).Take(request.ContentNoOfIncludedTopComments.Value).ToList();
-                    posts.AddRange(comments);
+                    var commentsQueryable = comments.AsQueryable();
+                    commentsQueryable = commentsQueryable.OrderByDescending(x => x.Score);
+                    if (request.ContentMinChars != null)
+                    {
+                        commentsQueryable = commentsQueryable.Where(x => x.Text.Length > request.ContentMinChars.Value);
+                    }
+                    if (request.ContentMaxChars != null)
+                    {
+                        commentsQueryable = commentsQueryable.Where(x => x.Text.Length <= request.ContentMaxChars.Value);
+                    }
+                    commentsQueryable = commentsQueryable.Take(request.ContentNoOfIncludedTopComments.Value);
+                    var commentsResult = commentsQueryable.ToList();
+                    posts.AddRange(commentsResult);
                 }
 
                 tries++;
