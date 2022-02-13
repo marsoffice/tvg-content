@@ -80,6 +80,11 @@ namespace MarsOffice.Tvg.Content.Services
                     }
                     commentsQueryable = commentsQueryable.Take(request.ContentNoOfIncludedTopComments.Value);
                     var commentsResult = commentsQueryable.ToList();
+                    if (commentsResult.Count < request.ContentNoOfIncludedTopComments.Value)
+                    {
+                        tries++;
+                        continue;
+                    }
                     posts.AddRange(commentsResult);
                 }
 
