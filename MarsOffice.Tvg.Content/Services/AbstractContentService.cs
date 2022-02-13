@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MarsOffice.Tvg.Content.Abstractions;
 using MarsOffice.Tvg.Content.Entities;
@@ -12,6 +13,7 @@ namespace MarsOffice.Tvg.Content.Services
     {
         protected readonly HttpClient httpClient;
         protected readonly CloudTable usedPostsTable;
+        private readonly ProfanityFilter.ProfanityFilter _filter = new ProfanityFilter.ProfanityFilter();
         public AbstractContentService(HttpClient httpClient, CloudTable usedPostsTable)
         {
             this.httpClient = httpClient;
@@ -62,6 +64,14 @@ namespace MarsOffice.Tvg.Content.Services
 
                 var comments = post.Comments;
                 post.Comments = null;
+
+                if (request.ContentIncludeLinks == null || request.ContentIncludeLinks == false)
+                {
+                    post.Text = RemoveLinks(post.Text);
+                }
+
+                post.Text = RemoveProfanity(post.Text);
+
                 posts.Add(
                     post
                 );
@@ -92,6 +102,16 @@ namespace MarsOffice.Tvg.Content.Services
                         tries++;
                         continue;
                     }
+
+                    foreach (var c in commentsResult)
+                    {
+                        if (request.ContentIncludeLinks == null || request.ContentIncludeLinks == false)
+                        {
+                            c.Text = RemoveLinks(c.Text);
+                        }
+                        c.Text = RemoveProfanity(c.Text);
+                    }
+
                     posts.AddRange(commentsResult);
                 }
 
@@ -123,6 +143,24 @@ namespace MarsOffice.Tvg.Content.Services
                 Category = posts.Where(x => !string.IsNullOrEmpty(x.Category)).FirstOrDefault()?.Category,
                 Posts = posts
             };
+        }
+
+        private string RemoveLinks(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+            return Regex.Replace(text, @"((http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", "");
+        }
+
+        private string RemoveProfanity(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+            return _filter.CensorString(text, '*', true);
         }
 
         public abstract Task<Post> GetOneRandomPost(RequestContent request);
