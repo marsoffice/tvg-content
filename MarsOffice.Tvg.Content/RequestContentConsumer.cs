@@ -56,6 +56,7 @@ namespace MarsOffice.Tvg.Content
                     VideoId = request.VideoId
                 });
                 await contentResponseQueue.FlushAsync();
+                throw;
             }
         }
     }
