@@ -54,13 +54,13 @@ namespace MarsOffice.Tvg.Content
             }
             catch (Exception e)
             {
+                log.LogError(e, "Function threw an exception");
                 if (message.DequeueCount >= 5)
                 {
-                    log.LogError(e, "Function threw an exception");
                     await contentResponseQueue.AddAsync(new ContentResponse
                     {
                         Success = false,
-                        Error = e.Message,
+                        Error = "ContentService: " + e.Message,
                         JobId = request.JobId,
                         VideoId = request.VideoId
                     });
