@@ -160,7 +160,7 @@ namespace MarsOffice.Tvg.Content.Services
             {
                 return text;
             }
-            return _filter.CensorString(text, '*', true);
+            return text; // _filter.CensorString(text, '*', true);
         }
 
         public abstract Task<Post> GetOneRandomPost(RequestContent request);
