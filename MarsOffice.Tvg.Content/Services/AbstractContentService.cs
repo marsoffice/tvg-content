@@ -13,7 +13,6 @@ namespace MarsOffice.Tvg.Content.Services
     {
         protected readonly HttpClient httpClient;
         protected readonly CloudTable usedPostsTable;
-        private readonly ProfanityFilter.ProfanityFilter _filter = new ProfanityFilter.ProfanityFilter();
         public AbstractContentService(HttpClient httpClient, CloudTable usedPostsTable)
         {
             this.httpClient = httpClient;
@@ -145,7 +144,7 @@ namespace MarsOffice.Tvg.Content.Services
             };
         }
 
-        private string RemoveLinks(string text)
+        private static string RemoveLinks(string text)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -154,13 +153,9 @@ namespace MarsOffice.Tvg.Content.Services
             return Regex.Replace(text, @"((http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", "");
         }
 
-        private string RemoveProfanity(string text)
+        private static string RemoveProfanity(string text)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return text;
-            }
-            return text; // _filter.CensorString(text, '*', true);
+            return text;
         }
 
         public abstract Task<Post> GetOneRandomPost(RequestContent request);
