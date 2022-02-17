@@ -93,7 +93,7 @@ namespace MarsOffice.Tvg.Content.Services
                         UniqueId = c.Id,
                         Score = c.Score,
                         PostedDate = DateTimeOffset.FromUnixTimeSeconds((long)Math.Round(c.created_utc))
-                    }).Where(p => !p.Text.ToLower().Contains("[removed]")).ToList()
+                    }).Where(p => !string.IsNullOrEmpty(p.Text) && !p.Text.ToLower().Contains("[removed]")).ToList()
             };
         }
     }
